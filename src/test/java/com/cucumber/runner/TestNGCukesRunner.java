@@ -1,0 +1,34 @@
+package com.cucumber.runner;
+
+import com.cucumber.listener.ExtentProperties;
+import com.cucumber.listener.Reporter;
+import cucumber.api.CucumberOptions;
+import cucumber.api.testng.AbstractTestNGCucumberTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+
+import java.io.File;
+
+@CucumberOptions(
+        features = {"src/test/resources/features/MyFeature.feature"},
+        glue = {"com.cucumber.stepdefinitions"},
+        plugin = {"com.cucumber.listener.ExtentCucumberFormatter:","pretty", "html:target/cucumber-html-report",
+        		"json:target/cucumber.json", "junit:target/cucumber.xml"}
+)
+public class TestNGCukesRunner extends AbstractTestNGCucumberTests {
+    @BeforeClass
+    public  static void setup() {
+        ExtentProperties extentProperties = ExtentProperties.INSTANCE;
+//        extentProperties.setExtentXServerUrl("http://localhost:1337");
+//        extentProperties.setProjectName("TestNGProject");
+        extentProperties.setReportPath("output/myreport.html");
+    }
+
+    @AfterClass
+    public static void teardown() {
+        Reporter.loadXMLConfig(new File("src/test/resources/extent-config.xml"));
+        Reporter.setSystemInfo("user", System.getProperty("user.name"));
+        Reporter.setSystemInfo("os", "Mac OSX");
+        Reporter.setTestRunnerOutput("Sample test runner output message");
+    }
+}
